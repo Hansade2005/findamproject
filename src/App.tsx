@@ -11,14 +11,16 @@ import PostProject from './pages/PostProject';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
+import Bookmarks from './pages/Bookmarks';
+import Notifications from './pages/Notifications';
+import Settings from './pages/Settings';
 
 function AppContent() {
-  useEffect(() => {
-    seedIfEmpty();
-  }, []);
+  useEffect(() => { seedIfEmpty(); }, []);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-950">
+    <div className="flex flex-col min-h-screen bg-[#06060f]">
       <Navbar />
       <main className="flex-1">
         <Routes>
@@ -29,6 +31,10 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/bookmarks" element={<Bookmarks />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
