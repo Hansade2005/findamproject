@@ -6,26 +6,26 @@ export default function MobileBottomNav() {
 
   const navItems = [
     { to: '/', icon: Home, label: 'Home' },
-    { to: '/listings', icon: Search, label: 'Browse' },
-    { to: '/post-ad', icon: PlusCircle, label: 'Post Ad' },
+    { to: '/browse', icon: Search, label: 'Browse' },
+    { to: '/post', icon: PlusCircle, label: 'Post' },
     { to: '/messages', icon: MessageCircle, label: 'Messages' },
-    { to: '/about', icon: User, label: 'More' },
+    { to: '/profile', icon: User, label: 'Profile' },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex md:hidden z-40">
+    <nav className="fixed bottom-0 left-0 right-0 bg-gray-900/95 backdrop-blur-lg border-t border-gray-800 flex md:hidden z-40">
       {navItems.map(({ to, icon: Icon, label }) => {
         const active = location.pathname === to;
         return (
           <Link
             key={to}
             to={to}
-            className={`flex-1 flex flex-col items-center justify-center py-2 text-xs font-medium transition-colors ${
-              active ? 'text-orange-500' : 'text-gray-500 hover:text-orange-400'
+            className={`flex-1 flex flex-col items-center justify-center py-2.5 text-xs font-medium transition-colors ${
+              active ? 'text-purple-400' : 'text-gray-500 hover:text-gray-300'
             }`}
           >
-            <Icon size={label === 'Post Ad' ? 26 : 22} className={label === 'Post Ad' ? 'text-orange-500' : ''} />
-            <span className={label === 'Post Ad' ? 'text-orange-500 font-semibold' : ''}>{label}</span>
+            <Icon size={label === 'Post' ? 26 : 22} className={label === 'Post' ? (active ? 'text-purple-400' : 'text-purple-500') : ''} />
+            <span className="mt-0.5">{label}</span>
           </Link>
         );
       })}
