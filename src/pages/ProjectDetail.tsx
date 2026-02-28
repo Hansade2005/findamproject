@@ -134,7 +134,7 @@ export default function ProjectDetail() {
           {/* Main content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Header card */}
-            <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-6">
+            <div className="glass rounded-xl p-6">
               <div className="flex items-start justify-between gap-4 mb-4">
                 <div className="flex-1">
                   <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -176,7 +176,7 @@ export default function ProjectDetail() {
             </div>
 
             {/* Skills */}
-            <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-6">
+            <div className="glass rounded-xl p-6">
               <h2 className="text-white font-semibold mb-3">Skills Needed</h2>
               <div className="flex flex-wrap gap-2">
                 {project.skills.map((skill) => (
@@ -192,7 +192,7 @@ export default function ProjectDetail() {
 
             {/* Apply form */}
             {!isOwner && (
-              <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-6">
+              <div className="glass rounded-xl p-6">
                 <h2 className="text-white font-semibold mb-4">Apply to Join</h2>
 
                 {!currentUser ? (
@@ -260,7 +260,7 @@ export default function ProjectDetail() {
 
             {/* Applications (owner view) */}
             {isOwner && applications.length > 0 && (
-              <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-6">
+              <div className="glass rounded-xl p-6">
                 <h2 className="text-white font-semibold mb-4">
                   Applications ({applications.length})
                 </h2>
@@ -315,7 +315,7 @@ export default function ProjectDetail() {
           {/* Sidebar */}
           <div className="space-y-4">
             {/* Project info */}
-            <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-5">
+            <div className="glass rounded-xl p-5">
               <h3 className="text-white font-semibold mb-4">Project Info</h3>
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-sm">
@@ -351,7 +351,7 @@ export default function ProjectDetail() {
             </div>
 
             {/* Team progress */}
-            <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-5">
+            <div className="glass rounded-xl p-5">
               <h3 className="text-white font-semibold mb-3">Team Progress</h3>
               <div className="mb-2 flex justify-between text-xs text-gray-400">
                 <span>{project.currentMembers} members</span>
@@ -370,7 +370,7 @@ export default function ProjectDetail() {
 
             {/* Applications count (owner) */}
             {isOwner && (
-              <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-5">
+              <div className="glass rounded-xl p-5">
                 <h3 className="text-white font-semibold mb-3">Applications</h3>
                 <div className="grid grid-cols-3 gap-2 text-center">
                   <div className="bg-yellow-500/10 rounded-lg p-2">
@@ -395,7 +395,7 @@ export default function ProjectDetail() {
       {/* Delete confirmation modal */}
       {showDeleteConfirm && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-          <div className="bg-gray-800 border border-gray-700 rounded-xl p-6 max-w-sm w-full">
+          <div className="glass rounded-xl p-6 max-w-sm w-full">
             <h3 className="text-white font-bold mb-2">Delete Project</h3>
             <p className="text-gray-400 text-sm mb-5">
               Are you sure you want to delete "{project.title}"? This action cannot be undone.

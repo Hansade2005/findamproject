@@ -24,7 +24,7 @@ export default function PostProject() {
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
-        <div className="bg-gray-800 border border-gray-700 rounded-xl p-8 max-w-md w-full text-center">
+        <div className="glass rounded-xl p-8 max-w-md w-full text-center">
           <h2 className="text-white text-xl font-bold mb-3">Sign in required</h2>
           <p className="text-gray-400 mb-5">You need to be logged in to post a project.</p>
           <Link
@@ -95,7 +95,7 @@ export default function PostProject() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Title */}
-          <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-6">
+          <div className="glass rounded-xl p-6">
             <h2 className="text-white font-semibold mb-4">Project Details</h2>
 
             <div className="space-y-4">
@@ -161,7 +161,7 @@ export default function PostProject() {
           </div>
 
           {/* Skills */}
-          <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-6">
+          <div className="glass rounded-xl p-6">
             <h2 className="text-white font-semibold mb-4">Skills Needed <span className="text-red-400">*</span></h2>
 
             {/* Selected skills */}

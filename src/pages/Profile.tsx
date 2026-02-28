@@ -93,7 +93,7 @@ export default function Profile() {
     <div className="min-h-screen bg-gray-950">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Profile header */}
-        <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-6 mb-6">
+        <div className="glass rounded-xl p-6 mb-6">
           <div className="flex items-start gap-5">
             {/* Avatar */}
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center text-white text-2xl font-bold flex-shrink-0">
@@ -218,18 +218,18 @@ export default function Profile() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4 mb-6">
-          <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-4 text-center">
+          <div className="glass rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-white">{myProjects.length}</div>
             <div className="text-gray-400 text-sm">Projects Posted</div>
           </div>
-          <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-4 text-center">
+          <div className="glass rounded-xl p-4 text-center">
             <div className="text-2xl font-bold text-white">{myApplications.length}</div>
             <div className="text-gray-400 text-sm">Applications Sent</div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 bg-gray-800/60 border border-gray-700/50 rounded-xl p-1.5 mb-6">
+        <div className="flex gap-1 glass rounded-xl p-1.5 mb-6">
           {(['projects', 'applications'] as const).map((tab) => (
             <button
               key={tab}
@@ -298,7 +298,7 @@ export default function Profile() {
             ) : (
               <div className="space-y-3">
                 {myApplications.map(({ app, project }) => (
-                  <div key={app.id} className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-4">
+                  <div key={app.id} className="glass rounded-xl p-4">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <Link

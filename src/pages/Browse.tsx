@@ -67,7 +67,7 @@ export default function Browse() {
   return (
     <div className="min-h-screen bg-gray-950">
       {/* Header */}
-      <div className="bg-gray-900 border-b border-gray-800">
+      <div className="glass border-b border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-3xl font-bold text-white mb-2">Browse Projects</h1>
           <p className="text-gray-400">
@@ -84,7 +84,7 @@ export default function Browse() {
                 value={localQuery}
                 onChange={(e) => setLocalQuery(e.target.value)}
                 placeholder="Search by title, skill, or keyword..."
-                className="w-full bg-gray-800 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 text-sm"
+                className="w-full glass-input rounded-lg pl-10 pr-4 py-2.5 text-white placeholder-gray-500 text-sm"
               />
             </div>
             <button
@@ -112,7 +112,7 @@ export default function Browse() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Filter bar */}
         {showFilters && (
-          <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-5 mb-6">
+          <div className="glass rounded-xl p-5 mb-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>

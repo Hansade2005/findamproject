@@ -89,7 +89,7 @@ export default function Signup() {
           <p className="text-gray-400 text-sm">Join thousands of developers building together</p>
         </div>
 
-        <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-7">
+        <div className="glass rounded-2xl p-7">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
