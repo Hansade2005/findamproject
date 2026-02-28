@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Search, ArrowRight, Code2, Smartphone, Brain, Gamepad2,
   Database, GitBranch, Palette, Layers, Cpu, Globe,
-  Users, FolderOpen, Zap,
+  Users, FolderOpen, Zap, Sparkles,
 } from 'lucide-react';
 import { getAllProjects } from '../services/db';
 import type { Project } from '../types';
@@ -36,7 +36,7 @@ export default function Home() {
   useEffect(() => {
     getAllProjects().then((projects) => {
       const open = projects.filter((p) => p.status === 'open');
-      setFeaturedProjects(open.slice(0, 3));
+      setFeaturedProjects(open.slice(0, 6));
     });
   }, []);
 
@@ -53,19 +53,24 @@ export default function Home() {
     <div className="min-h-screen bg-gray-950">
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-gray-950 to-blue-900/20" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-800/10 via-transparent to-transparent" />
+        {/* Animated background orbs */}
+        <div className="absolute inset-0">
+          <div className="absolute top-20 left-1/4 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl animate-pulse-glow" />
+          <div className="absolute top-40 right-1/4 w-80 h-80 bg-blue-600/15 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '2s' }} />
+          <div className="absolute bottom-10 left-1/3 w-72 h-72 bg-indigo-600/10 rounded-full blur-3xl animate-pulse-glow" style={{ animationDelay: '4s' }} />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-gray-950/50 to-gray-950" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-28">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-32">
           <div className="text-center max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/20 rounded-full px-4 py-1.5 text-purple-300 text-sm font-medium mb-6">
-              <Zap size={14} />
+            <div className="inline-flex items-center gap-2 glass rounded-full px-4 py-1.5 text-purple-300 text-sm font-medium mb-6">
+              <Sparkles size={14} className="text-purple-400" />
               Find your next side project
             </div>
 
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-none">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white mb-6 tracking-tight leading-none glow-text">
               Build something{' '}
-              <span className="bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-purple-400 via-blue-400 to-purple-400 bg-clip-text text-transparent animated-bg">
                 amazing
               </span>{' '}
               together
@@ -84,12 +89,12 @@ export default function Home() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search projects by skill, keyword..."
-                  className="w-full bg-gray-800/80 border border-gray-700 rounded-xl pl-11 pr-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500/50 transition-colors"
+                  className="w-full glass-input rounded-xl pl-11 pr-4 py-3.5 text-white placeholder-gray-500 text-sm"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3.5 rounded-xl font-semibold transition-colors whitespace-nowrap"
+                className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-3.5 rounded-xl font-semibold transition-all whitespace-nowrap hover:shadow-lg hover:shadow-purple-600/25"
               >
                 Search
               </button>
@@ -104,7 +109,7 @@ export default function Home() {
       </section>
 
       {/* Stats */}
-      <section className="border-y border-gray-800 bg-gray-900/50">
+      <section className="glass border-y border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-3 gap-8 text-center">
             {[
@@ -141,7 +146,7 @@ export default function Home() {
               to={`/browse?category=${encodeURIComponent(label)}`}
               className="group"
             >
-              <div className="bg-gray-800/60 border border-gray-700/50 rounded-xl p-4 text-center hover:border-purple-500/50 hover:bg-gray-800 transition-all duration-200">
+              <div className="glass-card rounded-xl p-4 text-center">
                 <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center mx-auto mb-3 text-white group-hover:scale-110 transition-transform`}>
                   {icon}
                 </div>
@@ -165,13 +170,13 @@ export default function Home() {
         </div>
 
         {featuredProjects.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {featuredProjects.map((project) => (
               <ProjectCard key={project.id} project={project} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 text-gray-500">
+          <div className="glass rounded-xl text-center py-16 text-gray-500">
             <FolderOpen size={40} className="mx-auto mb-3 opacity-40" />
             <p>No projects yet. Be the first to post one!</p>
             <Link to="/post" className="mt-4 inline-block text-purple-400 hover:text-purple-300">
@@ -182,18 +187,24 @@ export default function Home() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-y border-purple-800/30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">Have a project idea?</h2>
-          <p className="text-gray-400 mb-8 max-w-lg mx-auto">
-            Post your project and find talented collaborators to bring your idea to life.
-          </p>
-          <Link
-            to="/post"
-            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-colors"
-          >
-            Post a Project <ArrowRight size={18} />
-          </Link>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-900/30 to-blue-900/30" />
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/2 w-96 h-32 bg-purple-600/20 rounded-full blur-3xl" />
+        </div>
+        <div className="relative glass border-y border-purple-500/10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+            <h2 className="text-3xl font-bold text-white mb-4">Have a project idea?</h2>
+            <p className="text-gray-400 mb-8 max-w-lg mx-auto">
+              Post your project and find talented collaborators to bring your idea to life.
+            </p>
+            <Link
+              to="/post"
+              className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-8 py-3.5 rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-purple-600/25"
+            >
+              Post a Project <ArrowRight size={18} />
+            </Link>
+          </div>
         </div>
       </section>
     </div>
