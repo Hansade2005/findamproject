@@ -3,7 +3,7 @@ import { FolderOpen, Github, Twitter } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 border-t border-gray-800 mt-auto">
+    <footer className="glass-navbar mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
@@ -37,6 +37,7 @@ export default function Footer() {
                 { label: 'Browse Projects', to: '/browse' },
                 { label: 'Post a Project', to: '/post' },
                 { label: 'Sign Up', to: '/signup' },
+                { label: 'About', to: '/about' },
                 { label: 'Sign In', to: '/login' },
               ].map((item) => (
                 <li key={item.label}>

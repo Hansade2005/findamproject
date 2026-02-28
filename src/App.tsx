@@ -11,6 +11,10 @@ import PostProject from './pages/PostProject';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
+import Notifications from './pages/Notifications';
+import About from './pages/About';
+import Messages from './pages/Messages';
 
 function AppContent() {
   useEffect(() => {
@@ -29,6 +33,10 @@ function AppContent() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/messages" element={<Messages />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>

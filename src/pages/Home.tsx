@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Search, ArrowRight, Code2, Smartphone, Brain, Gamepad2,
   Database, GitBranch, Palette, Layers, Cpu, Globe,
-  Users, FolderOpen, Zap, Sparkles,
+  Users, FolderOpen, Sparkles,
 } from 'lucide-react';
 import { getAllProjects } from '../services/db';
 import type { Project } from '../types';

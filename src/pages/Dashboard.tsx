@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FolderOpen, Users, Eye, PlusCircle, ArrowRight, TrendingUp, Clock } from 'lucide-react';
+import { FolderOpen, Users, Eye, PlusCircle, ArrowRight, TrendingUp } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getAllProjects } from '../services/db';
 import type { Project } from '../types';

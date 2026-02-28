@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MessageSquare, Send, Search, User } from 'lucide-react';
+import { MessageSquare, Send, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 

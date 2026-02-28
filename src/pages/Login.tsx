@@ -62,7 +62,7 @@ export default function Login() {
           <p className="text-gray-400 text-sm">Sign in to your account</p>
         </div>
 
-        <div className="bg-gray-800/60 border border-gray-700/50 rounded-2xl p-7">
+        <div className="glass rounded-2xl p-7">
           {/* Demo hint */}
           <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3 mb-5 text-xs text-purple-300">
             <span className="font-semibold">Demo account:</span> alice@example.com / password123
