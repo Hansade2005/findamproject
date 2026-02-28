@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { CheckCircle, Sparkles, Zap } from 'lucide-react';
+import { CheckCircle, Sparkles } from 'lucide-react';
 
 const PLANS = [
   {

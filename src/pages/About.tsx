@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Users, Shield, Zap, Heart, Rocket, Globe, Code2, Star } from 'lucide-react';
+import { Users, Shield, Zap, Heart, Rocket, Code2, Star } from 'lucide-react';
 
 const STATS = [
   { value: '2024', label: 'Founded' },
