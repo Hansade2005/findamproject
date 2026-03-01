@@ -412,7 +412,6 @@ export default function ProjectDetail() {
                 </p>
               )}
             </div>
-          </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
@@ -500,7 +499,7 @@ export default function ProjectDetail() {
           <div className="glass rounded-xl p-6 max-w-sm w-full">
             <h3 className="text-white font-bold mb-2">Delete Project</h3>
             <p className="text-gray-400 text-sm mb-5">
-              Are you sure you want to delete "{project.title}"? This action cannot be undone.
+              Are you sure you want to delete &quot;{project.title}&quot;? This action cannot be undone.
             </p>
             <div className="flex gap-3">
               <button
