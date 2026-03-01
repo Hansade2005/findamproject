@@ -73,3 +73,32 @@ export const SKILLS_LIST = [
   'UI/UX Design', 'Figma', 'Blockchain', 'Solidity',
   'Unity', 'Unreal Engine', 'WebGL', 'Three.js',
 ];
+
+export interface Notification {
+  id: string;
+  userId: string;
+  type: 'application_received' | 'application_accepted' | 'application_rejected' | 'new_comment' | 'new_message';
+  title: string;
+  description: string;
+  link: string;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderName: string;
+  text: string;
+  createdAt: string;
+}
+
+export interface Conversation {
+  id: string;
+  participants: string[];
+  participantNames: string[];
+  lastMessage: string;
+  lastMessageAt: string;
+  createdAt: string;
+}

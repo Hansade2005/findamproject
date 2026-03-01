@@ -31,12 +31,14 @@ const CATEGORY_DEFS: CategoryDef[] = [
 export default function Home() {
   const [featuredProjects, setFeaturedProjects] = useState<Project[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [stats, setStats] = useState({ projects: 0, developers: 0 });
   const navigate = useNavigate();
 
   useEffect(() => {
     getAllProjects().then((projects) => {
       const open = projects.filter((p) => p.status === 'open');
       setFeaturedProjects(open.slice(0, 6));
+      setStats({ projects: projects.length, developers: new Set(projects.map((p) => p.ownerId)).size });
     });
   }, []);
 
@@ -113,8 +115,8 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="grid grid-cols-3 gap-8 text-center">
             {[
-              { icon: <FolderOpen size={20} />, value: '100+', label: 'Projects Posted' },
-              { icon: <Users size={20} />, value: '500+', label: 'Developers' },
+              { icon: <FolderOpen size={20} />, value: stats.projects || '0', label: 'Projects Posted' },
+              { icon: <Users size={20} />, value: stats.developers || '0', label: 'Developers' },
               { icon: <Globe size={20} />, value: '10', label: 'Categories' },
             ].map((stat) => (
               <div key={stat.label} className="flex flex-col items-center">

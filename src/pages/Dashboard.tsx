@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FolderOpen, Users, Eye, PlusCircle, ArrowRight, TrendingUp } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { getAllProjects } from '../services/db';
+import { getAllProjects, getApplicationsByUser } from '../services/db';
 import type { Project } from '../types';
 import ProjectCard from '../components/ProjectCard';
 
@@ -10,6 +10,7 @@ export default function Dashboard() {
   const { currentUser } = useAuth();
   const [myProjects, setMyProjects] = useState<Project[]>([]);
   const [allProjects, setAllProjects] = useState<Project[]>([]);
+  const [collaborations, setCollaborations] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,6 +18,9 @@ export default function Dashboard() {
       setAllProjects(projects);
       if (currentUser) {
         setMyProjects(projects.filter((p) => p.ownerId === currentUser.id));
+        getApplicationsByUser(currentUser.id).then((apps) => {
+          setCollaborations(apps.filter((a) => a.status === 'accepted').length);
+        });
       }
       setLoading(false);
     }).catch(() => setLoading(false));
@@ -57,7 +61,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
             { icon: <FolderOpen size={20} />, label: 'My Projects', value: myProjects.length, colorClass: 'text-purple-400' },
-            { icon: <Users size={20} />, label: 'Collaborations', value: 0, colorClass: 'text-blue-400' },
+            { icon: <Users size={20} />, label: 'Collaborations', value: collaborations, colorClass: 'text-blue-400' },
             { icon: <Eye size={20} />, label: 'Open Projects', value: openProjects, colorClass: 'text-emerald-400' },
             { icon: <TrendingUp size={20} />, label: 'Total Projects', value: allProjects.length, colorClass: 'text-orange-400' },
           ].map((stat) => (
