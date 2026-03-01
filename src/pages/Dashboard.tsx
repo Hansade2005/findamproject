@@ -19,11 +19,11 @@ export default function Dashboard() {
         setMyProjects(projects.filter((p) => p.ownerId === currentUser.id));
       }
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }, [currentUser]);
 
   const openProjects = allProjects.filter((p) => p.status === 'open').length;
-  const recentProjects = allProjects
+  const recentProjects = [...allProjects]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 3);
 
@@ -56,13 +56,13 @@ export default function Dashboard() {
         {/* Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           {[
-            { icon: <FolderOpen size={20} />, label: 'My Projects', value: myProjects.length, color: 'purple' },
-            { icon: <Users size={20} />, label: 'Collaborations', value: 0, color: 'blue' },
-            { icon: <Eye size={20} />, label: 'Open Projects', value: openProjects, color: 'emerald' },
-            { icon: <TrendingUp size={20} />, label: 'Total Projects', value: allProjects.length, color: 'orange' },
+            { icon: <FolderOpen size={20} />, label: 'My Projects', value: myProjects.length, colorClass: 'text-purple-400' },
+            { icon: <Users size={20} />, label: 'Collaborations', value: 0, colorClass: 'text-blue-400' },
+            { icon: <Eye size={20} />, label: 'Open Projects', value: openProjects, colorClass: 'text-emerald-400' },
+            { icon: <TrendingUp size={20} />, label: 'Total Projects', value: allProjects.length, colorClass: 'text-orange-400' },
           ].map((stat) => (
             <div key={stat.label} className="glass-card rounded-xl p-5">
-              <div className={`text-${stat.color}-400 mb-3`}>{stat.icon}</div>
+              <div className={`${stat.colorClass} mb-3`}>{stat.icon}</div>
               <div className="text-2xl font-bold text-white">{stat.value}</div>
               <div className="text-gray-500 text-sm">{stat.label}</div>
             </div>

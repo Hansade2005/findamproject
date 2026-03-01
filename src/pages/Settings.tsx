@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Settings as SettingsIcon, Moon, Sun, Bell, Shield, Palette, Monitor } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { Link } from 'react-router-dom';
 
 interface AppSettings {
@@ -32,6 +33,7 @@ function loadSettings(): AppSettings {
 
 export default function Settings() {
   const { currentUser } = useAuth();
+  const { setTheme: applyTheme } = useTheme();
   const [settings, setSettings] = useState<AppSettings>(loadSettings);
   const [saved, setSaved] = useState(false);
 
@@ -42,6 +44,7 @@ export default function Settings() {
   const update = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) => {
     setSettings((prev) => ({ ...prev, [key]: value }));
     setSaved(false);
+    if (key === 'theme') applyTheme(value as 'dark' | 'light' | 'system');
   };
 
   const handleSave = () => {
