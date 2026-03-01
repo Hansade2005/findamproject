@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Bookmark, Heart } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getBookmarksByUser, getProjectById, removeBookmark } from '../services/db';
-import type { Project, Bookmark as BookmarkType } from '../types';
+import type { Project } from '../types';
 import ProjectCard from '../components/ProjectCard';
 
 export default function SavedProjects() {
