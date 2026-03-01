@@ -45,6 +45,22 @@ export const CATEGORIES = [
   'Other',
 ];
 
+export interface Comment {
+  id: string;
+  projectId: string;
+  userId: string;
+  userName: string;
+  text: string;
+  createdAt: string;
+}
+
+export interface Bookmark {
+  id: string;
+  userId: string;
+  projectId: string;
+  createdAt: string;
+}
+
 export const DIFFICULTIES = ['Beginner', 'Intermediate', 'Advanced'];
 
 export const SKILLS_LIST = [

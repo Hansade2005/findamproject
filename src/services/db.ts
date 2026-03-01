@@ -1,6 +1,6 @@
 import { openDB } from 'idb';
 import type { DBSchema, IDBPDatabase } from 'idb';
-import type { User, Project, Application } from '../types';
+import type { User, Project, Application, Comment, Bookmark } from '../types';
 
 interface FindAProjectDB extends DBSchema {
   users: {
@@ -18,35 +18,51 @@ interface FindAProjectDB extends DBSchema {
     value: Application;
     indexes: { 'by-project': string; 'by-user': string };
   };
+  comments: {
+    key: string;
+    value: Comment;
+    indexes: { 'by-project': string };
+  };
+  bookmarks: {
+    key: string;
+    value: Bookmark;
+    indexes: { 'by-user': string; 'by-project': string };
+  };
 }
 
 let db: IDBPDatabase<FindAProjectDB>;
 
 async function getDB() {
   if (!db) {
-    db = await openDB<FindAProjectDB>('findamproject-db', 1, {
-      upgrade(database) {
-        // Users store
-        const userStore = database.createObjectStore('users', { keyPath: 'id' });
-        userStore.createIndex('by-email', 'email', { unique: true });
+    db = await openDB<FindAProjectDB>('findamproject-db', 2, {
+      upgrade(database, oldVersion) {
+        if (oldVersion < 1) {
+          const userStore = database.createObjectStore('users', { keyPath: 'id' });
+          userStore.createIndex('by-email', 'email', { unique: true });
 
-        // Projects store
-        const projectStore = database.createObjectStore('projects', { keyPath: 'id' });
-        projectStore.createIndex('by-owner', 'ownerId');
-        projectStore.createIndex('by-category', 'category');
-        projectStore.createIndex('by-status', 'status');
+          const projectStore = database.createObjectStore('projects', { keyPath: 'id' });
+          projectStore.createIndex('by-owner', 'ownerId');
+          projectStore.createIndex('by-category', 'category');
+          projectStore.createIndex('by-status', 'status');
 
-        // Applications store
-        const appStore = database.createObjectStore('applications', { keyPath: 'id' });
-        appStore.createIndex('by-project', 'projectId');
-        appStore.createIndex('by-user', 'userId');
+          const appStore = database.createObjectStore('applications', { keyPath: 'id' });
+          appStore.createIndex('by-project', 'projectId');
+          appStore.createIndex('by-user', 'userId');
+        }
+        if (oldVersion < 2) {
+          const commentStore = database.createObjectStore('comments', { keyPath: 'id' });
+          commentStore.createIndex('by-project', 'projectId');
+
+          const bookmarkStore = database.createObjectStore('bookmarks', { keyPath: 'id' });
+          bookmarkStore.createIndex('by-user', 'userId');
+          bookmarkStore.createIndex('by-project', 'projectId');
+        }
       },
     });
   }
   return db;
 }
 
-// Simple hash function (for demo purposes — not cryptographically secure)
 export function hashPassword(password: string): string {
   let hash = 0;
   for (let i = 0; i < password.length; i++) {
@@ -153,6 +169,44 @@ export async function getUserApplicationForProject(
   return apps.find((a) => a.projectId === projectId);
 }
 
+// ─── Comments ─────────────────────────────────────────────────────────────────
+
+export async function addComment(data: Omit<Comment, 'id' | 'createdAt'>): Promise<Comment> {
+  const database = await getDB();
+  const comment: Comment = { ...data, id: generateId(), createdAt: new Date().toISOString() };
+  await database.add('comments', comment);
+  return comment;
+}
+
+export async function getCommentsByProject(projectId: string): Promise<Comment[]> {
+  const database = await getDB();
+  return database.getAllFromIndex('comments', 'by-project', projectId);
+}
+
+// ─── Bookmarks ────────────────────────────────────────────────────────────────
+
+export async function addBookmark(userId: string, projectId: string): Promise<Bookmark> {
+  const database = await getDB();
+  const bookmark: Bookmark = { id: generateId(), userId, projectId, createdAt: new Date().toISOString() };
+  await database.add('bookmarks', bookmark);
+  return bookmark;
+}
+
+export async function removeBookmark(id: string): Promise<void> {
+  const database = await getDB();
+  await database.delete('bookmarks', id);
+}
+
+export async function getBookmarksByUser(userId: string): Promise<Bookmark[]> {
+  const database = await getDB();
+  return database.getAllFromIndex('bookmarks', 'by-user', userId);
+}
+
+export async function getUserBookmarkForProject(userId: string, projectId: string): Promise<Bookmark | undefined> {
+  const bookmarks = await getBookmarksByUser(userId);
+  return bookmarks.find((b) => b.projectId === projectId);
+}
+
 // ─── Seed data ────────────────────────────────────────────────────────────────
 
 export async function seedIfEmpty(): Promise<void> {
@@ -160,7 +214,6 @@ export async function seedIfEmpty(): Promise<void> {
   const count = await database.count('projects');
   if (count > 0) return;
 
-  // Create a demo user
   const demoUser: User = {
     id: 'demo-user-1',
     name: 'Alice Chen',
@@ -189,7 +242,7 @@ export async function seedIfEmpty(): Promise<void> {
     {
       id: 'proj-1',
       title: 'Open Source Code Review Tool',
-      description: 'Building a collaborative code review platform that integrates with GitHub and GitLab. Looking for developers who love developer tooling and want to improve the code review experience for teams worldwide. The tool will feature AI-assisted reviews, inline comments, and approval workflows.',
+      description: 'Building a collaborative code review platform that integrates with GitHub and GitLab. Looking for developers who love developer tooling and want to improve the code review experience for teams worldwide.',
       category: 'Web Development',
       skills: ['React', 'TypeScript', 'Node.js', 'GraphQL', 'PostgreSQL'],
       status: 'open',
@@ -202,7 +255,7 @@ export async function seedIfEmpty(): Promise<void> {
     {
       id: 'proj-2',
       title: 'AI-Powered Recipe Generator',
-      description: 'An app that uses machine learning to generate personalized recipes based on dietary restrictions, available ingredients, and nutritional goals. We\'re building a smart meal planning assistant that learns from user preferences over time.',
+      description: 'An app that uses machine learning to generate personalized recipes based on dietary restrictions, available ingredients, and nutritional goals.',
       category: 'AI / Machine Learning',
       skills: ['Python', 'Machine Learning', 'React', 'REST API', 'PostgreSQL'],
       status: 'open',
@@ -215,7 +268,7 @@ export async function seedIfEmpty(): Promise<void> {
     {
       id: 'proj-3',
       title: 'Multiplayer Puzzle Game',
-      description: 'A real-time multiplayer puzzle game with procedurally generated levels. Players can compete or collaborate to solve increasingly complex puzzles. The game features a custom physics engine and an ELO ranking system.',
+      description: 'A real-time multiplayer puzzle game with procedurally generated levels. Players can compete or collaborate to solve increasingly complex puzzles.',
       category: 'Game Development',
       skills: ['Unity', 'C#', 'WebGL', 'Node.js', 'Firebase'],
       status: 'open',
@@ -228,7 +281,7 @@ export async function seedIfEmpty(): Promise<void> {
     {
       id: 'proj-4',
       title: 'Decentralized Freelance Marketplace',
-      description: 'A blockchain-based freelance platform where smart contracts handle payments and escrow. No middlemen, lower fees, and trustless transactions. Looking for blockchain devs and frontend engineers.',
+      description: 'A blockchain-based freelance platform where smart contracts handle payments and escrow. No middlemen, lower fees, and trustless transactions.',
       category: 'Blockchain',
       skills: ['Solidity', 'React', 'TypeScript', 'Ethereum', 'Web3.js'],
       status: 'open',
@@ -241,7 +294,7 @@ export async function seedIfEmpty(): Promise<void> {
     {
       id: 'proj-5',
       title: 'Cross-Platform Fitness Tracker',
-      description: 'A mobile app that tracks workouts, nutrition, and sleep. Features include wearable device integration, social challenges with friends, and personalized AI coaching. Building with Flutter for iOS and Android.',
+      description: 'A mobile app that tracks workouts, nutrition, and sleep. Features include wearable device integration, social challenges with friends, and personalized AI coaching.',
       category: 'Mobile App',
       skills: ['Flutter', 'Dart', 'Firebase', 'Machine Learning', 'UI/UX Design'],
       status: 'open',
@@ -254,7 +307,7 @@ export async function seedIfEmpty(): Promise<void> {
     {
       id: 'proj-6',
       title: 'Developer Portfolio Generator',
-      description: 'A CLI tool that automatically generates beautiful developer portfolio websites from a simple YAML config file. Supports multiple themes, project showcases, and one-click deployment to Vercel or Netlify.',
+      description: 'A CLI tool that automatically generates beautiful developer portfolio websites from a simple YAML config file. Supports multiple themes and one-click deployment.',
       category: 'Open Source',
       skills: ['TypeScript', 'Node.js', 'React', 'Figma'],
       status: 'closed',

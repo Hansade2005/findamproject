@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, Users, Calendar, Tag, CheckCircle, XCircle,
-  Clock, Send, Trash2,
+  Clock, Send, Trash2, Bookmark, BookmarkCheck, MessageCircle,
 } from 'lucide-react';
 import {
   getProjectById, getApplicationsByProject, createApplication,
   updateApplication, updateProject, deleteProject,
+  addComment, getCommentsByProject, addBookmark, removeBookmark, getUserBookmarkForProject,
 } from '../services/db';
-import type { Project, Application } from '../types';
+import type { Project, Application, Comment as CommentType, Bookmark as BookmarkType } from '../types';
 import { useAuth } from '../context/AuthContext';
 
 const categoryColors: Record<string, string> = {
@@ -38,6 +39,10 @@ export default function ProjectDetail() {
   const [error, setError] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [comments, setComments] = useState<CommentType[]>([]);
+  const [commentText, setCommentText] = useState('');
+  const [bookmark, setBookmark] = useState<BookmarkType | null>(null);
+  const [bookmarking, setBookmarking] = useState(false);
 
   const isOwner = currentUser && project?.ownerId === currentUser.id;
 
@@ -46,17 +51,48 @@ export default function ProjectDetail() {
     Promise.all([
       getProjectById(id),
       getApplicationsByProject(id),
-    ]).then(([proj, apps]) => {
+      getCommentsByProject(id),
+    ]).then(([proj, apps, cmts]) => {
       if (!proj) { navigate('/browse'); return; }
       setProject(proj);
       setApplications(apps);
+      setComments(cmts.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()));
       if (currentUser) {
         const existing = apps.find((a) => a.userId === currentUser.id);
         if (existing) setUserApp(existing);
+        getUserBookmarkForProject(currentUser.id, id).then((bm) => {
+          if (bm) setBookmark(bm);
+        });
       }
       setLoading(false);
     });
   }, [id, currentUser]);
+
+  const handleBookmark = async () => {
+    if (!currentUser || !project) return;
+    setBookmarking(true);
+    if (bookmark) {
+      await removeBookmark(bookmark.id);
+      setBookmark(null);
+    } else {
+      const bm = await addBookmark(currentUser.id, project.id);
+      setBookmark(bm);
+    }
+    setBookmarking(false);
+  };
+
+  const handleComment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!currentUser || !project || !commentText.trim()) return;
+    const c = await addComment({
+      projectId: project.id,
+      userId: currentUser.id,
+      userName: currentUser.name,
+      text: commentText.trim(),
+    });
+    setComments((prev) => [...prev, c]);
+    setCommentText('');
+  };
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -154,22 +190,38 @@ export default function ProjectDetail() {
                   <h1 className="text-2xl font-bold text-white leading-snug">{project.title}</h1>
                   <p className="text-gray-400 text-sm mt-1">Posted by {project.ownerName}</p>
                 </div>
-                {isOwner && (
-                  <div className="flex gap-2">
+                <div className="flex gap-2">
+                  {currentUser && (
                     <button
-                      onClick={handleToggleStatus}
-                      className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
+                      onClick={handleBookmark}
+                      disabled={bookmarking}
+                      className={`text-xs px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5 ${
+                        bookmark
+                          ? 'bg-purple-600/30 text-purple-300 hover:bg-purple-600/50'
+                          : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      }`}
                     >
-                      {project.status === 'open' ? 'Close Project' : 'Reopen Project'}
+                      {bookmark ? <BookmarkCheck size={14} /> : <Bookmark size={14} />}
+                      {bookmark ? 'Saved' : 'Save'}
                     </button>
-                    <button
-                      onClick={() => setShowDeleteConfirm(true)}
-                      className="text-xs bg-red-900/30 hover:bg-red-900/50 text-red-400 px-3 py-1.5 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                )}
+                  )}
+                  {isOwner && (
+                    <>
+                      <button
+                        onClick={handleToggleStatus}
+                        className="text-xs bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        {project.status === 'open' ? 'Close Project' : 'Reopen Project'}
+                      </button>
+                      <button
+                        onClick={() => setShowDeleteConfirm(true)}
+                        className="text-xs bg-red-900/30 hover:bg-red-900/50 text-red-400 px-3 py-1.5 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
 
               <p className="text-gray-300 leading-relaxed whitespace-pre-line">{project.description}</p>
@@ -310,6 +362,56 @@ export default function ProjectDetail() {
                 </div>
               </div>
             )}
+          </div>
+
+            {/* Comments */}
+            <div className="glass rounded-xl p-6">
+              <h2 className="text-white font-semibold mb-4 flex items-center gap-2">
+                <MessageCircle size={18} /> Discussion ({comments.length})
+              </h2>
+
+              {comments.length > 0 && (
+                <div className="space-y-4 mb-6">
+                  {comments.map((c) => (
+                    <div key={c.id} className="bg-gray-700/30 rounded-lg p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-xs font-bold text-white">
+                          {c.userName.charAt(0)}
+                        </div>
+                        <span className="text-white text-sm font-medium">{c.userName}</span>
+                        <span className="text-gray-500 text-xs">
+                          {new Date(c.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        </span>
+                      </div>
+                      <p className="text-gray-300 text-sm">{c.text}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {currentUser ? (
+                <form onSubmit={handleComment} className="flex gap-3">
+                  <input
+                    type="text"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    placeholder="Write a comment..."
+                    className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-4 py-2.5 text-white placeholder-gray-500 text-sm focus:outline-none focus:border-purple-500"
+                  />
+                  <button
+                    type="submit"
+                    disabled={!commentText.trim()}
+                    className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white px-4 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <Send size={16} />
+                  </button>
+                </form>
+              ) : (
+                <p className="text-gray-500 text-sm">
+                  <Link to="/login" className="text-purple-400 hover:underline">Sign in</Link> to join the discussion.
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Sidebar */}
