@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { seedIfEmpty } from './services/db';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -15,6 +16,8 @@ import Dashboard from './pages/Dashboard';
 import Notifications from './pages/Notifications';
 import About from './pages/About';
 import Messages from './pages/Messages';
+import Settings from './pages/Settings';
+import SavedProjects from './pages/SavedProjects';
 
 function AppContent() {
   useEffect(() => {
@@ -37,6 +40,8 @@ function AppContent() {
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/about" element={<About />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/saved" element={<SavedProjects />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
@@ -49,7 +54,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppContent />
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
       </AuthProvider>
     </BrowserRouter>
   );

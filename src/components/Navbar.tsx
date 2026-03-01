@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Menu, X, FolderOpen, LogOut, User, PlusCircle, Search, LayoutDashboard, Bell } from 'lucide-react';
+import { Menu, X, FolderOpen, LogOut, User, PlusCircle, Search, LayoutDashboard, Bell, Bookmark, Settings } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
@@ -50,6 +50,9 @@ export default function Navbar() {
                 <Link to="/messages" className={`text-sm font-medium transition-colors ${isActive('/messages')}`}>
                   Messages
                 </Link>
+                <Link to="/saved" className={`text-sm font-medium transition-colors ${isActive('/saved')}`}>
+                  Saved
+                </Link>
               </>
             )}
             <Link to="/about" className={`text-sm font-medium transition-colors ${isActive('/about')}`}>
@@ -61,6 +64,9 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-3">
             {currentUser ? (
               <div className="flex items-center gap-3">
+                <Link to="/settings" className="text-gray-400 hover:text-white transition-colors p-1">
+                  <Settings size={18} />
+                </Link>
                 <Link to="/notifications" className="relative text-gray-400 hover:text-white transition-colors p-1">
                   <Bell size={18} />
                   <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-purple-500 rounded-full"></span>
@@ -126,8 +132,14 @@ export default function Navbar() {
               <Link to="/messages" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-gray-300 hover:text-white py-2">
                 <Bell size={16} /> Messages
               </Link>
+              <Link to="/saved" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-gray-300 hover:text-white py-2">
+                <Bookmark size={16} /> Saved Projects
+              </Link>
               <Link to="/profile" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-gray-300 hover:text-white py-2">
                 <User size={16} /> Profile
+              </Link>
+              <Link to="/settings" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 text-gray-300 hover:text-white py-2">
+                <Settings size={16} /> Settings
               </Link>
               <button onClick={handleLogout} className="flex items-center gap-2 text-gray-300 hover:text-white py-2 w-full text-left">
                 <LogOut size={16} /> Logout
